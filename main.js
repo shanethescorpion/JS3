@@ -1,10 +1,14 @@
+
 import getUserInput from "./modules.js";
 import { Calculator, convertToJson, saveToLocalStorage, getFromLocalStorage, isPositive, operateOnNumbers, fetchData } from "./modules.js"
+import { generateData } from "./modules.js";
+
 
 // Main Program
 document.addEventListener("DOMContentLoaded", async () => {
     // User Input
-    const number = getUserInput();
+    //const number = getUserInput(); 
+    const number = 1;
     
     // Ternary Operator
     const isPositiveNumber = isPositive(number);
@@ -27,7 +31,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Fetch API (Async/Await)
     const apiUrl = "https://jsonplaceholder.typicode.com/todos/";
-    const fetchedData = await fetchData(apiUrl);
+    //const fetchedData = await fetchData(apiUrl);
+
 
     // Display Results
     console.log("User Input:", number);
@@ -38,5 +43,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Retrieved Data from Local Storage:", retrievedData);
     console.log("Sum:", sum);
     console.log("Difference:", difference);
-    console.log("Fetched Data:", fetchedData);
+   // console.log("Fetched Data:", fetchedData);
+
+    //const tblTHsLabels = ["User ID", "Task ID", "Title", "Status"];
+    const tblRecords = document.getElementById("tblRecords");
+    const loadData = document.getElementById("loadData");
+    const clearTable = document.getElementById("clearTable");
+    let dataloaded = false; 
+    loadData.addEventListener("click", async () => {
+        try {
+            if (!dataloaded) {
+                const fetchedData = await fetchData(apiUrl);
+                generateData(fetchedData);
+                dataloaded = true;
+            } else {
+                console.log("Data has already been loaded.");
+                return; 
+            }
+        } catch (error) {
+            console.error("Error loading data:", error);
+        }
+    });
+    clearTable.addEventListener("click", () => {
+        tblRecords.innerHTML = "";
+        dataloaded = false;
+    });
 });
